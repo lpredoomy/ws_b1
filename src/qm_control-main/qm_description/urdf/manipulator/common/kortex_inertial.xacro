@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+
+
+<root xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:gazebo="http://playerstage.sourceforge.net/gazebo/xmlschema/#gz"
+    xmlns:model="http://playerstage.sourceforge.net/gazebo/xmlschema/#model"
+	xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+	xmlns:body="http://playerstage.sourceforge.net/gazebo/xmlschema/#body"
+    xmlns:geom="http://playerstage.sourceforge.net/gazebo/xmlschema/#geom"
+    xmlns:joint="http://playerstage.sourceforge.net/gazebo/xmlschema/#joint"
+	xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+	xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+	xmlns:rendering="http://playerstage.sourceforge.net/gazebo/xmlschema/#rendering"
+    xmlns:renderable="http://playerstage.sourceforge.net/gazebo/xmlschema/#renderable"
+    xmlns:physics="http://playerstage.sourceforge.net/gazebo/xmlschema/#physics"
+	xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- links      		mesh_no
+   base           		0
+   shoulder       		1
+   arm            		2
+   forearm        		3
+   wrist          		4
+   arm_mico       		5
+   arm_half1 (7dof)		6
+   arm_half2 (7dof)		7
+   wrist_spherical_1  8
+   wrist_spherical_2  9
+
+   hand 3 finger  		55
+   hand_2finger   		56
+   finger_proximal		57
+   finger_distal      58
+-->
+
+<xacro:macro name="inertia_cylinder" params="mass height radius axis:=0">
+
+  <!-- z Axis -->
+  <xacro:unless value="${axis}">
+    <inertia  ixx="${0.083333 * mass * (3*radius*radius + height*height)}" ixy="0" ixz="0"
+              iyy="${0.083333 * mass * (3*radius*radius + height*height)}" iyz="0"
+              izz="${0.5*mass*radius*radius}" />
+  </xacro:unless>
+
+  <!-- y Axis -->
+  <xacro:unless value="${axis-1}">
+   <inertia  ixx="${0.083333 * mass * (3*radius*radius + height*height)}" ixy="0" ixz="0"
+             iyy="${0.5*mass*radius*radius}"
+             izz="${0.083333 * mass * (3*radius*radius + height*height)}" iyz="0" />
+  </xacro:unless>
+
+  <!-- x Axis -->
+  <xacro:unless value="${axis-2}">
+   <inertia  ixx="${0.5*mass*radius*radius}"
+             iyy="${0.083333 * mass * (3*radius*radius + height*height)}" iyz="0"
+             izz="${0.083333 * mass * (3*radius*radius + height*height)}" ixy="0" ixz="0" />
+  </xacro:unless>
+</xacro:macro>
+
+
+<xacro:macro name="kortex_inertial" params="mesh_no">
+  <!-- base = 0 -->
+  <xacro:unless value="${mesh_no}">
+    <inertial>
+        <origin xyz="-0.000648 -0.000166 0.084487" rpy="0 0 0" />
+        <mass value="1.697" />
+        <inertia ixx="0.004622" ixy="9E-06" ixz="6E-05" iyy="0.004495" iyz="9E-06" izz="0.002079" />
+    </inertial>
+  </xacro:unless>
+
+  <!-- shoulder = 1 -->
+  <xacro:unless value="${mesh_no-1}">
+      <inertial>
+        <origin xyz="-2.3E-05 -0.010364 -0.07336" rpy="0 0 0" />
+        <mass value="1.3773" />
+        <inertia ixx="0.00457" ixy="1E-06" ixz="2E-06" iyy="0.004831" iyz="0.000448" izz="0.001409" />
+      </inertial>
+  </xacro:unless>
+
+  <!-- arm = 2-->
+  <xacro:unless value="${mesh_no-2}">
+      <inertial>
+        <origin xyz="-4.4E-05 -0.09958 -0.013278" rpy="0 0 0" />
+        <mass value="1.1636" />
+        <inertia ixx="0.011088" ixy="5E-06" ixz="0" iyy="0.001072" iyz="-0.000691" izz="0.011255" />
+      </inertial>
+  </xacro:unless>
+
+  <!-- forearm = 3 -->
+  <xacro:unless value="${mesh_no-3}">
+      <inertial>
+        <origin xyz="-4.4E-05 -0.006641 -0.117892" rpy="0 0 0" />
+        <mass value="1.1636" />
+        <inertia ixx="0.010932" ixy="0" ixz="-7E-06" iyy="0.011127" iyz="0.000606" izz="0.001043" />
+      </inertial>
+  </xacro:unless>
+
+  <!-- wrist = 4 -->
+  <xacro:unless value="${mesh_no-4}">
+      <inertial>
+        <origin xyz="-1.8E-05 -0.075478 -0.015006" rpy="0 0 0" />
+        <mass value="0.9302" />
+        <inertia ixx="0.008147" ixy="-1E-06" ixz="0" iyy="0.000631" iyz="-0.0005" izz="0.008316" />
+      </inertial>
+  </xacro:unless>
+
+<!--arm_mico       		5 -->
+  <xacro:unless value="${mesh_no-5}">
+      <inertial>
+        <origin xyz="1E-06 -0.009432 -0.063883" rpy="0 0 0" />
+        <mass value="0.6781" />
+        <inertia ixx="0.001596" ixy="0" ixz="0" iyy="0.001607" iyz="0.000256" izz="0.000399" />
+      </inertial>
+  </xacro:unless>
+
+<!--   arm_half1 (7dof)		6 -->
+  <xacro:unless value="${mesh_no-6}">
+      <inertial>
+        <origin xyz="1E-06 -0.045483 -0.00965" rpy="0 0 0" />
+        <mass value="0.6781" />
+        <inertia ixx="0.001641" ixy="0" ixz="0" iyy="0.00041" iyz="-0.000278" izz="0.001641" />
+      </inertial>
+  </xacro:unless>
+
+<!--   arm_half2 (7dof)		7 -->
+  <xacro:unless value="${mesh_no-7}">
+      <inertial>
+        <origin xyz="-9.3E-05 0.000132 -0.022905" rpy="0 0 0" />
+        <mass value="0.364" />
+        <inertia ixx="0.000214" ixy="0" ixz="1E-06" iyy="0.000223" iyz="-2E-06" izz="0.00024" />
+      </inertial>
+  </xacro:unless>
+
+
+</xacro:macro>
+</root>
