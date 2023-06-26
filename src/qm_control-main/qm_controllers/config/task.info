@@ -11,8 +11,8 @@ model_settings
   phaseTransitionStanceTime     0.1
 
   verboseCppAd                  true
-  recompileLibrariesCppAd       false ;
-  modelFolderCppAd              /tmp/qm
+  recompileLibrariesCppAd       false 
+  modelFolderCppAd              /tmp/qm_b1
 
   ; base frame of the robot (from URDF)
   baseFrame                       "base_link"
